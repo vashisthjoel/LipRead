@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.api
+    container_name: lipread-api
+    ports:
+      - "8000:8000"
+    environment:
+      - LIPREAD_DATA_ROOT=/app/data
+      - LIPREAD_CHECKPOINT_PATH=/app/checkpoints/best_model.pt
+      - GENAI_ENABLED=false
+    volumes:
+      - ../checkpoints:/app/checkpoints:ro
+    restart: unless-stopped
+
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.app
+    container_name: lipread-app
+    ports:
+      - "8501:8501"
+    environment:
+      - LIPREAD_API_URL=http://api:8000
+    depends_on:
+      - api
+    restart: unless-stopped

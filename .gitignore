@@ -1,0 +1,108 @@
+# ==============================================================================
+# LipRead - Git Ignore Configuration
+# ==============================================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+.venv*/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+
+# IDE and Editor configurations
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# Testing & Coverage (PyTest)
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Data directories (keep directory structure, ignore data payloads)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/metadata/*
+!data/metadata/.gitkeep
+data/*.jsonl
+data/*.csv
+
+# External dataset paths and local scratch directories
+datasets/
+LipRead_Data/
+scratch/
+.system_generated/
+
+# Model checkpoints, weights, and serialized graphs
+*.pt
+*.pth
+*.pwf
+*.onnx
+*.tflite
+*.h5
+*.keras
+*.ckpt
+*.bin
+weights/*
+!weights/.gitkeep
+checkpoints/
+models_cache/
+
+# Experiment Tracking (MLflow, TensorBoard, Wandb)
+mlruns/
+mlartifacts/
+wandb/
+runs/
+
+# Application and runtime logs
+*.log
+logs/
+
+# Operating System specific files
+.DS_Store
+Thumbs.db
+desktop.ini

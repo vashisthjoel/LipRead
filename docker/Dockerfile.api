@@ -1,0 +1,33 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system runtime libraries required by OpenCV and video processing
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1 \
+    libglib2.0-0 \
+    ffmpeg \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy application source code
+COPY api/ api/
+COPY src/ src/
+COPY configs/ configs/
+COPY weights/ weights/
+
+# Expose FastAPI port
+EXPOSE 8000
+
+# Environment defaults
+ENV PYTHONUNBUFFERED=1
+ENV LIPREAD_DATA_ROOT=/app/data
+ENV LIPREAD_CHECKPOINT_PATH=/app/checkpoints/best_model.pt
+
+# Run FastAPI with Uvicorn
+CMD ["python", "-m", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]

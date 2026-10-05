@@ -1,0 +1,111 @@
+# ==============================================================================
+# LipRead - Baseline Configuration
+# ==============================================================================
+# NOTE: These are conservative, baseline defaults designed for development
+# on a single NVIDIA GeForce GTX 1650 (4 GB VRAM).
+# They are NOT claimed to be optimal hyperparameters and should be tuned
+# during systematic experimentation.
+# ==============================================================================
+
+project:
+  name: "LipRead"
+  description: "Production-oriented sentence-level lip-reading system"
+  version: "0.1.0"
+  seed: 42
+
+data:
+  # Base directory for datasets and ML artifacts.
+  # Can be overridden via the LIPREAD_DATA_ROOT environment variable.
+  data_root: "E:/LipRead_Data"
+  dataset_name: "EGCLLC"
+  raw_dir_name: "raw"
+  processed_dir_name: "processed"
+  metadata_dir_name: "metadata"
+  checkpoints_dir_name: "checkpoints"
+  mlruns_dir_name: "mlruns"
+  # Target character vocabulary (blank token for CTC is index 0)
+  vocab: " abcdefghijklmnopqrstuvwxyz'"
+
+dataset:
+  name: "egcllc"
+  root: "E:/LipRead_Data/raw/EGCLLC"
+  metadata_root: "E:/LipRead_Data/metadata"
+  processed_dir: "E:/LipRead_Data/processed"
+  sequence_length: 75
+  image_height: 88
+  image_width: 88
+  grayscale: true
+  normalize: true
+  use_cache: true
+
+loader:
+  batch_size: 2
+  num_workers: 0
+  pin_memory: true
+  shuffle: true
+
+video:
+  # Spatial dimensions for cropped mouth region of interest (ROI)
+  # 88x88 is standard for lip-reading and fits comfortably in 4GB VRAM
+  image_size: [88, 88]
+  # Fixed sequence length (number of frames per sample sequence)
+  # 75 frames @ 25 fps = 3.0 seconds of speech
+  sequence_length: 75
+  fps: 25
+  # Channel format: grayscale (1) is standard for VSR to minimize memory footprint
+  channels: 1
+
+preprocessing:
+  # Spatial dimensions for cropped mouth region of interest (ROI)
+  image_size: 88
+  # Fixed sequence length (number of frames per temporal tensor)
+  sequence_length: 75
+  # Target framerate
+  fps: 25
+  # Grayscale conversion (1 channel)
+  grayscale: true
+  # Pixel normalization to [0.0, 1.0]
+  normalization: true
+  # MediaPipe facial landmark detection confidence thresholds
+  min_face_detection_confidence: 0.5
+  min_tracking_confidence: 0.5
+  # Relative bounding box padding around detected mouth landmarks
+  padding_ratio: 0.25
+  # Enforce square aspect ratio for ROI crop before resizing
+  square_roi: true
+  # Strategy when sequence is shorter than sequence_length ("edge" or "zero")
+  padding_strategy: "edge"
+  # Strategy when sequence is longer than sequence_length ("center", "start", or "end")
+  truncation_strategy: "center"
+  # Model asset path for MediaPipe FaceLandmarker
+  model_asset_path: "weights/face_landmarker.task"
+
+model:
+  name: "lipread_3dcnn_bilstm"
+  # 3D CNN Spatiotemporal Front-End
+  # Conservative channel progression to respect 4 GB VRAM limits
+  cnn_channels: [32, 64, 96]
+  # Bi-LSTM Temporal Back-End
+  lstm_hidden_size: 256
+  lstm_layers: 2
+  bidirectional: true
+  dropout: 0.2
+  ctc_blank_index: 0
+
+training:
+  # Conservative baseline for NVIDIA GTX 1650 (4 GB VRAM)
+  batch_size: 2
+  gradient_accumulation_steps: 2
+  num_workers: 0
+  mixed_precision: true
+  optimizer: "AdamW"
+  initial_learning_rate: 0.0001
+  weight_decay: 0.0001
+  gradient_clip_norm: 1.0
+  epochs: 5
+  seed: 42
+  early_stopping_patience: 3
+
+mlflow:
+  experiment_name: "LipRead"
+  tracking_uri: null # defaults to E:/LipRead_Data/mlruns

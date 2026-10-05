@@ -1,0 +1,35 @@
+# ==============================================================================
+# LipRead - Dependencies
+# ==============================================================================
+
+# --- Stage 1: Foundation (Active) ---
+pyyaml>=6.0.1
+pytest>=8.0.0
+numpy>=1.26.0
+
+# PyTorch Deep Learning (pre-installed in .venv with CUDA 12.6)
+# torch==2.14.1+cu126
+# torchvision==0.29.1+cu126
+# torchaudio==2.11.0+cu126
+
+# --- Stage 2: Computer Vision & Preprocessing (Active) ---
+opencv-python>=4.8.0
+mediapipe>=0.10.0
+
+# --- Stage 5: Experiment Tracking (Upcoming) ---
+# mlflow>=2.10.0
+
+# --- Stage 9: LLM Post-Processing & LangChain Orchestration (Active) ---
+langchain>=1.4.0
+langchain-core>=1.6.0
+langchain-community>=0.4.0
+
+# --- Stage 7: Serving REST API (Active) ---
+fastapi>=0.109.0
+uvicorn>=0.27.0
+python-multipart>=0.0.9
+httpx>=0.27.0
+
+# --- Stage 8: Frontend User Interface (Active) ---
+streamlit>=1.31.0
+
